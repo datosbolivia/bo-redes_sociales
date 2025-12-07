@@ -62,11 +62,11 @@ async def fetch_user_videos(browser, user):
     future_body = asyncio.Future()
     loading_finished_future = asyncio.Future()
 
-    # avoid race condition when response_received is triggered before loading_finished
     async def reset_lff():
         nonlocal loading_finished_future
         loading_finished_future = asyncio.Future()
 
+    # avoid race condition when response_received is triggered before loading_finished
     async def request_handler(ev):
         if '/api/post/item_list' in ev.request.url:
             nonlocal request_id
@@ -99,7 +99,7 @@ async def fetch_user_videos(browser, user):
         (zendriver.cdp.network.ResponseReceived, response_received_handler),
         (zendriver.cdp.network.LoadingFinished, loading_finished_handler),
     ]
-    for event, handler in handlers_to_remove.items():
+    for event, handler in browser_handlers.items():
         browser.main_tab.add_handler(event, handler=handler)
 
     try:
@@ -110,7 +110,7 @@ async def fetch_user_videos(browser, user):
         body = None
 
     # cleanup
-    for event, handler in handlers_to_remove.items():
+    for event, handler in browser_handlers.items():
         browser.main_tab.remove_handlers(event, handler=handler)
 
     return body
@@ -176,7 +176,7 @@ async def download_subtitles(user, df_u):
         try:
             await fetch_sub(sub['Url'], user, vid)
         except:
-            await asyncio.sleep(60)
+            await asyncio.sleep(TIMEOUT * 2)
         finally:
             await asyncio.sleep(sub['duration'] / 10)
 
