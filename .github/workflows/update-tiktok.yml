@@ -46,4 +46,4 @@ jobs:
           git pull
           git add -A
           git commit -m "[ci] actualización tiktok"
-          git push -q "https://$GH_TOKEN@github.com/pr0nstar/bo-redes-sociales.git" main
+          git push -q "https://$GH_TOKEN@github.com/datosbolivia/bo-redes_sociales_tiktok.git" main
