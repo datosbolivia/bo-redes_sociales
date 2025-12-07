@@ -1,0 +1,8 @@
+numpy
+pandas
+pyvirtualdisplay
+zendriver
+asyncio
+aiohttp
+async-timeout
+requests[socks]

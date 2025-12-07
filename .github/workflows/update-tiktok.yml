@@ -1,0 +1,50 @@
+name: Update tiktok data
+on:
+  schedule:
+      - cron: '10 * * * *'
+jobs:
+  update:
+    name: update data
+    runs-on: ubuntu-22.04
+    steps:
+      - name: checkout
+        uses: actions/checkout@main
+        with:
+          ref: main
+          lfs: true
+      - name: setup python
+        uses: actions/setup-python@v1
+        with:
+          python-version: '3.10'
+      - name: setup chromium
+        uses: browser-actions/setup-chrome@v2
+        id: setup-chrome
+        with:
+          chrome-version: 'stable'
+          install-chromedriver: true
+      - name: install dependencies
+        run: |
+          sudo apt-get install -y xvfb
+          python -m pip install --upgrade pip
+          pip install -r update/requirements.txt
+      - name: run update script
+        id: run_update_script
+        env:
+          CHROME_BIN: ${{ steps.setup-chrome.outputs.chrome-path }}
+        run: |
+          python update/update.py
+      - name: git status
+        id: git-status
+        run: |
+          git config --global user.email "psiport@hotmail.com"
+          git config --global user.name "pr0nstar"
+          echo ::set-output name=result::$(git status | tr -d "\n" | grep -c "nothing to commit")
+      - name: commit
+        if: steps.git-status.outputs.result == 0
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          git pull
+          git add -A
+          git commit -m "[ci] actualización tiktok"
+          git push -q "https://$GH_TOKEN@github.com/pr0nstar/bo-redes-sociales.git" main
