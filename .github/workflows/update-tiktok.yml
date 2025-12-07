@@ -21,7 +21,6 @@ jobs:
         id: setup-chrome
         with:
           chrome-version: 'stable'
-          install-chromedriver: true
       - name: install dependencies
         run: |
           sudo apt-get install -y xvfb
