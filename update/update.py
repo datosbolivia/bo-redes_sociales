@@ -79,7 +79,6 @@ async def fetch_user_videos(browser, user):
     async def response_received_handler(ev, tab=None):
         if '/api/post/item_list' in ev.response.url:
             await loading_finished_future
-            print(ev.response)
 
             body, _ = await tab.send(
                 zendriver.cdp.network.get_response_body(ev.request_id)
@@ -88,13 +87,13 @@ async def fetch_user_videos(browser, user):
             if len(body):
                 future_body.set_result(body)
             else:
-                # reset loading future, i expect this to not work
+                # reset loading future, i expect this not to work
                 await reset_lff()
 
         elif ERR == ev.response.url:
             future_body.set_result(None)
 
-    # setup listeners
+    # setup listenersloading_finished
     browser.main_tab.add_handler(
         zendriver.cdp.network.RequestWillBeSent,
         handler=request_handler
@@ -325,8 +324,8 @@ def get_working_proxy():
 
 if __name__ == '__main__':
     # proxy = get_working_proxy()
+    # print(proxy)
     proxy = None
-    print(proxy)
 
     users = pd.read_csv('./users.csv')['user_name']
 
