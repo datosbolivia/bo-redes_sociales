@@ -93,19 +93,14 @@ async def fetch_user_videos(browser, user):
         elif ERR == ev.response.url:
             future_body.set_result(None)
 
-    # setup listenersloading_finished
-    browser.main_tab.add_handler(
-        zendriver.cdp.network.RequestWillBeSent,
-        handler=request_handler
-    )
-    browser.main_tab.add_handler(
-        zendriver.cdp.network.ResponseReceived,
-        handler=response_received_handler
-    )
-    browser.main_tab.add_handler(
-        zendriver.cdp.network.LoadingFinished,
-        handler=loading_finished_handler
-    )
+    # setup listeners
+    browser_handlers = [
+        (zendriver.cdp.network.RequestWillBeSent, request_handler),
+        (zendriver.cdp.network.ResponseReceived, response_received_handler),
+        (zendriver.cdp.network.LoadingFinished, loading_finished_handler),
+    ]
+    for event, handler in handlers_to_remove.items():
+        browser.main_tab.add_handler(event, handler=handler)
 
     try:
         tab = await browser.get('https://www.tiktok.com/@{}'.format(user))
@@ -114,19 +109,9 @@ async def fetch_user_videos(browser, user):
         print('[!] account request timeout')
         body = None
 
-    # clean
-    browser.main_tab.remove_handlers(
-        zendriver.cdp.network.RequestWillBeSent,
-        handler=request_handler
-    )
-    browser.main_tab.remove_handlers(
-        zendriver.cdp.network.LoadingFinished,
-        handler=loading_finished_handler
-    )
-    browser.main_tab.remove_handlers(
-        zendriver.cdp.network.ResponseReceived,
-        handler=response_received_handler
-    )
+    # cleanup
+    for event, handler in handlers_to_remove.items():
+        browser.main_tab.remove_handlers(event, handler=handler)
 
     return body
 
