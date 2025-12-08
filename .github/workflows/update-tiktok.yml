@@ -1,7 +1,10 @@
 name: Update tiktok data
 on:
   schedule:
-      - cron: '0 5 * * *'
+    - cron: '0 5 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
 jobs:
   update:
     name: update data
@@ -35,8 +38,8 @@ jobs:
       - name: git status
         id: git-status
         run: |
-          git config --global user.email "psiport@hotmail.com"
-          git config --global user.name "pr0nstar"
+          git config --global user.email "actions@users.noreply.github.com""
+          git config --global user.name "automated"
           echo ::set-output name=result::$(git status | tr -d "\n" | grep -c "nothing to commit")
       - name: commit
         if: steps.git-status.outputs.result == 0
