@@ -99,7 +99,7 @@ async def fetch_user_videos(browser, user):
         (zendriver.cdp.network.ResponseReceived, response_received_handler),
         (zendriver.cdp.network.LoadingFinished, loading_finished_handler),
     ]
-    for event, handler in browser_handlers.items():
+    for event, handler in browser_handlers:
         browser.main_tab.add_handler(event, handler=handler)
 
     try:
@@ -110,7 +110,7 @@ async def fetch_user_videos(browser, user):
         body = None
 
     # cleanup
-    for event, handler in browser_handlers.items():
+    for event, handler in browser_handlers:
         browser.main_tab.remove_handlers(event, handler=handler)
 
     return body
