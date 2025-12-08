@@ -41,7 +41,7 @@ jobs:
       - name: commit
         if: steps.git-status.outputs.result == 0
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           git pull
           git add -A
