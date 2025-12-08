@@ -38,7 +38,7 @@ jobs:
       - name: git status
         id: git-status
         run: |
-          git config --global user.email "actions@users.noreply.github.com""
+          git config --global user.email "actions@users.noreply.github.com"
           git config --global user.name "automated"
           echo ::set-output name=result::$(git status | tr -d "\n" | grep -c "nothing to commit")
       - name: commit
