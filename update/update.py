@@ -131,7 +131,7 @@ async def do_fetch(url, headers, timeout):
 
 
 async def fetch_sub(url, user, vid):
-    fn = './data/{}/subs/{}'.format(user, vid)
+    fn = './tiktok/{}/subs/{}'.format(user, vid)
     dn = os.path.dirname(fn)
 
     if not os.path.isdir(dn):
@@ -238,7 +238,7 @@ COLS = [
     'stats.collectCount'
 ]
 def update_user(user, df_u):
-    fn = './data/{}/posts.csv'.format(user)
+    fn = './tiktok/{}/posts.csv'.format(user)
     dn = os.path.dirname(fn)
 
     if not os.path.isdir(dn):
