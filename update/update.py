@@ -1,4 +1,5 @@
 import os
+import csv
 import json
 
 import requests
@@ -11,6 +12,9 @@ import pyvirtualdisplay
 
 import numpy as np
 import pandas as pd
+
+import warnings
+warnings.filterwarnings('ignore', '.*', FutureWarning)
 
 import logging
 logging.basicConfig(
@@ -246,12 +250,26 @@ def update_user(user, df_u):
 
     df_u = df_u[COLS]
 
+    df_u['desc'] = df_u['desc'].fillna('')
+    df_u['stitchEnabled'] = df_u['stitchEnabled'].fillna(False)
+    df_u['duetEnabled'] = df_u['duetEnabled'].fillna(False)
+
+    df_u['music.duration'] = df_u['music.duration'].fillna(0)
+    df_u['video.size'] = df_u['video.size'].fillna(0)
+    df_u['video.bitrate'] = df_u['video.bitrate'].fillna(0)
+
+    df_u['video.claInfo.enableAutoCaption'] = df_u['video.claInfo.enableAutoCaption'].fillna(False)
+    df_u['video.claInfo.hasOriginalAudio'] = df_u['video.claInfo.hasOriginalAudio'].fillna(False)
+
+    df_u = df_u.convert_dtypes()
+
     if os.path.isfile(fn):
         df_us = pd.read_csv(fn)
         df_u = pd.concat([df_us, df_u], ignore_index=True)
+
         df_u = df_u[~df_u['id'].duplicated(keep='first')]
 
-    df_u.sort_values('createTime').to_csv(fn, index=False)
+    df_u.sort_values('createTime').to_csv(fn, index=False, quoting=csv.QUOTE_NONNUMERIC)
 
 
 def process_data(data):
