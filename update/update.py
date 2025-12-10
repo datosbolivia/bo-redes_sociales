@@ -201,7 +201,6 @@ COLS = [
 
     'desc',
     'textLanguage',
-    'AIGCDescription',
     'creatorAIComment.eligibleVideo',
     'creatorAIComment.hasAITopic',
     'creatorAIComment.notEligibleReason',
