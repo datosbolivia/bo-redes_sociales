@@ -261,14 +261,18 @@ def update_user(user, df_u):
     df_u['video.claInfo.hasOriginalAudio'] = df_u['video.claInfo.hasOriginalAudio'].fillna(False)
 
     df_u = df_u.convert_dtypes()
+    df_u['id'] = df_u['id'].astype(int)
 
     if os.path.isfile(fn):
         df_us = pd.read_csv(fn)
-        df_u = pd.concat([df_us, df_u], ignore_index=True)
+        df_us['id'] = df_us['id'].astype(int)
 
+        df_u = pd.concat([df_us, df_u], ignore_index=True)
         df_u = df_u[~df_u['id'].duplicated(keep='first')]
 
-    df_u.sort_values('createTime').to_csv(fn, index=False, quoting=csv.QUOTE_NONNUMERIC)
+    df_u.sort_values('createTime').to_csv(
+        fn, index=False, quoting=csv.QUOTE_NONNUMERIC
+    )
 
 
 def process_data(data):
